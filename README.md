@@ -2,7 +2,7 @@
 
 **Proyecto principal del repositorio: videojuego 3D de exploración y movimiento en tercera persona para Android, construido con Godot 4.4.**
 
-> Versión de prueba v0.4: demuestra movimiento libre, cámara, salto, dash, ciudad 3D y checkpoint. **Todavía no** incluye combate, enemigos, jefe jugable ni modelos artísticos definitivos.
+> Versión experimental v0.5: movimiento libre, cámara 3D, salto, dash, ciudad con 16 modelos urbanos CC0, primer enemigo perseguidor, ataques de garra/pulso y checkpoints. Todavía no incluye jefe, rescates ni modelos humanos definitivos.
 
 ## Abrir en Godot
 
@@ -13,7 +13,7 @@
 
 ## Compilar APK
 
-El workflow único `.github/workflows/android-3d.yml` importa el proyecto **desde la raíz**, comprueba la ejecución, genera el APK y valida que contiene scripts de IRA 3D y el identificador Android `com.lsnoglos.ira3d`. Artefacto: `IRA-3D-EXCLUSIVO-v0.4-APK`.
+El workflow único `.github/workflows/android-3d.yml` importa el proyecto **desde la raíz**, comprueba la ejecución, genera el APK y valida que contiene scripts de IRA 3D y el identificador Android `com.lsnoglos.ira3d`. Artefacto: `IRA-3D-v0.5-Ciudad-Combate-APK`.
 
 El proyecto se conserva independiente de la instalación 2D anterior. En Android comprueba que estás abriendo **IRA 3D EXCLUSIVO**, no la app antigua **IRA / El Purificador**.
 
@@ -38,3 +38,13 @@ Personajes y edificios aún son mallas 3D provisionales; no es un juego final co
 El instalador IRA 3D v0.4 se obtiene exclusivamente del workflow `IRA 3D - Android Main` y se identifica como `IRA-3D-EXCLUSIVO-v0.4-APK`; nunca utilices los artefactos históricos `IRA-Stage1-Android-APK`, que corresponden a la versión 2D. Para verificar que el APK es realmente 3D, el archivo debe contener `Hero.gdc`, `FollowCamera.gdc` y `RuinedDistrict.gdc`, y no debe contener `Game.gdc` ni los sprites del juego 2D. En pantalla debe aparecer `IRA 3D EXCLUSIVO · V0.4 · NO 2D`.
 
 **Nota:** La compilación v0.4 valida que el archivo exportado tiene exactamente el mismo nombre que el publicado en el artefacto; evita reutilizar APK históricos.
+
+## Novedades reales v0.5
+
+- 16 modelos Kenney CC0 `.glb` importados y reutilizados en un barrio urbano, con coches, cercas, postes y mobiliario, más detalles procedurales.
+- Primer enemigo original infectado que busca, persigue, inflige daño y desaparece al derrotarlo.
+- Ataques **GARRA** y **PULSO** en pantalla (teclado F y Q). Marcadores de vida, bajas y puntuación.
+- El personaje aún usa piezas geométricas animadas, mejoradas en forma pero no es un humanoide riggeado final; las escenas 3D artísticas profesionales siguen pendientes.
+- Consulta `docs/THIRD_PARTY_ASSETS.md` para las licencias CC0, proveedores y archivos exactos.
+
+El proceso CI valida Godot e impide publicar el instalador si la compilación o verificación del APK falla.
