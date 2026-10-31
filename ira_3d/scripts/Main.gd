@@ -36,7 +36,7 @@ func _process(_delta: float) -> void:
     if hud.consume_pause():
         paused = not paused
     hud.paused = paused
-    var look := hud.consume_camera_delta()
+    var look: Vector2 = hud.consume_camera_delta()
     if not paused and hud.intro_seconds <= 0.0:
         rig.orbit(look)
     if hud.consume_recenter():
