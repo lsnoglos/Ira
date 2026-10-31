@@ -1,0 +1,38 @@
+name: Build IRA Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  android-debug:
+    name: Godot Android debug APK
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout game sources
+        uses: actions/checkout@v4
+      - name: Unpack prepared sprite assets
+        shell: bash
+        run: |
+          if [ -f assets_sprites.tar.gz ]; then tar -xzf assets_sprites.tar.gz; fi
+      - name: Import Godot resources and validate scripts
+        shell: bash
+        run: |
+          godot --headless --editor --path . --quit 2>&1 | tee /tmp/godot-import.log
+          if grep -E '^SCRIPT ERROR:|^ERROR:.*Parse Error' /tmp/godot-import.log; then exit 1; fi
+      - name: Export Android APK (debug signed)
+        shell: bash
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-debug Android build/IRA-Stage1-debug.apk
+          test -s build/IRA-Stage1-debug.apk
+      - name: Publish APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IRA-Stage1-Android-APK
+          path: build/IRA-Stage1-debug.apk
+          if-no-files-found: error
+          retention-days: 30
