@@ -51,6 +51,8 @@ jobs:
           mkdir -p build
           godot --headless --path . --export-debug Android build/IRA-3D-Movimiento-debug.apk
           test -s build/IRA-3D-Movimiento-debug.apk
+      - name: Verify app identity
+        run: python3 tools/verify_apk.py build/IRA-3D-Movimiento-debug.apk
       - name: Upload 3D Android APK
         uses: actions/upload-artifact@v4
         with:
