@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout game sources
         uses: actions/checkout@v4
+      - name: Set up Godot export templates and Android toolchain
+        shell: bash
+        run: |
+          mkdir -p /github/home/.local/share/godot/export_templates/4.4.1.stable
+          cp -a /root/.local/share/godot/export_templates/4.4.1.stable/. /github/home/.local/share/godot/export_templates/4.4.1.stable/
+          mkdir -p /github/home/.config/godot
+          printf "%s\n" '[gd_resource type="EditorSettings" format=3]' '[resource]' 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"' 'export/android/android_sdk_path = "/usr/lib/android-sdk"' 'export/android/debug_keystore = "/root/debug.keystore"' 'export/android/debug_keystore_user = "androiddebugkey"' 'export/android/debug_keystore_pass = "android"' > /github/home/.config/godot/editor_settings-4.4.tres
+          test -s /root/debug.keystore
+          test -s /github/home/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk
       - name: Unpack prepared sprite assets
         shell: bash
         run: |
