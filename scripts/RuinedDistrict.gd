@@ -1,6 +1,7 @@
 extends Node3D
 ## A low-cost, original, procedural art blockout of a ruined dystopian city.
 const K = preload("res://scripts/ModelKit.gd")
+const URBAN = preload("res://scripts/UrbanAssets.gd")
 var rng := RandomNumberGenerator.new()
 var charcoal: Material
 var roadway: Material
@@ -25,7 +26,8 @@ func _ready() -> void:
     _make_materials()
     _build_light_environment()
     _build_floor()
-    _build_city()
+    var architecture := URBAN.new()
+    add_child(architecture)
     _build_props()
     _build_checkpoint()
 
@@ -49,26 +51,26 @@ func _build_light_environment() -> void:
     var world := WorldEnvironment.new()
     var environment := Environment.new()
     environment.background_mode = Environment.BG_COLOR
-    environment.background_color = Color("2a1a30")
+    environment.background_color = Color("121e2e")
     environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-    environment.ambient_light_color = Color("8996bc")
-    environment.ambient_light_energy = 0.62
+    environment.ambient_light_color = Color("7590b4")
+    environment.ambient_light_energy = 0.80
     environment.reflected_light_source = Environment.REFLECTION_SOURCE_BG
     environment.fog_enabled = true
-    environment.fog_light_color = Color("642b43")
-    environment.fog_density = 0.012
+    environment.fog_light_color = Color("243345")
+    environment.fog_density = 0.007
     world.environment = environment
     add_child(world)
     var sun := DirectionalLight3D.new()
     sun.rotation_degrees = Vector3(-42, 28, 12)
-    sun.light_color = Color("ffb297")
-    sun.light_energy = 0.94
+    sun.light_color = Color("ffb48f")
+    sun.light_energy = 1.30
     sun.shadow_enabled = true
     add_child(sun)
     var cold := DirectionalLight3D.new()
     cold.rotation_degrees = Vector3(-20, -130, 0)
     cold.light_color = Color("729dcc")
-    cold.light_energy = 0.46
+    cold.light_energy = 0.58
     add_child(cold)
 
 func _build_floor() -> void:
@@ -147,8 +149,6 @@ func _build_props() -> void:
     for j in range(8):
         var zz: float = -2.0-float(j)*9.5
         _rubble(Vector3(rng.randf_range(-4.9,4.9),0,zz))
-    _damaged_car(Vector3(-4.1,0,-18),0.25)
-    _damaged_car(Vector3(4.0,0,-49),-0.6)
     # Distant circular beacon where the future boss encounter will happen.
     _distant_eye_monument(Vector3(0,5.2,-71))
 

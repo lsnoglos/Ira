@@ -7,6 +7,11 @@ var jump_queued := false
 var dodge_queued := false
 var recenter_queued := false
 var pause_queued := false
+var claw_queued := false
+var pulse_queued := false
+var life := 100
+var kills := 0
+var score := 0
 var joystick_finger := -1
 var camera_finger := -1
 var joystick_origin := Vector2.ZERO
@@ -63,6 +68,16 @@ func consume_recenter() -> bool:
     recenter_queued = false
     return was
 
+func consume_claw() -> bool:
+    var queued := claw_queued
+    claw_queued = false
+    return queued
+
+func consume_pulse() -> bool:
+    var queued := pulse_queued
+    pulse_queued = false
+    return queued
+
 func consume_pause() -> bool:
     var was := pause_queued
     pause_queued = false
@@ -98,6 +113,12 @@ func _press(finger: int, pos: Vector2) -> void:
             intro_seconds = 0.0
         elif paused:
             pause_queued = true
+        return
+    if pos.y > s.y-343.0 and pos.y < s.y-171.0 and pos.x > s.x-174.0:
+        claw_queued = true
+        return
+    if pos.y > s.y-343.0 and pos.y < s.y-171.0 and pos.x > s.x-305.0:
+        pulse_queued = true
         return
     if pos.y > s.y-215.0 and pos.x < s.x*0.42 and joystick_finger == -1:
         joystick_finger = finger
@@ -137,17 +158,18 @@ func _draw_hud() -> void:
     var s: Vector2 = get_viewport().get_visible_rect().size
     var font: Font = ThemeDB.fallback_font
     var ui_size: int = 18
-    hud_root.draw_rect(Rect2(Vector2(0,0), Vector2(s.x, 86)), Color(0.012, 0.018, 0.032, 0.74))
+    hud_root.draw_rect(Rect2(Vector2(0,0), Vector2(s.x, 102)), Color(0.012, 0.018, 0.032, 0.74))
     hud_root.draw_rect(Rect2(Vector2(19,16),Vector2(5,53)), red)
     hud_root.draw_string(font, Vector2(37,39), "IRA 3D / EL PURIFICADOR", HORIZONTAL_ALIGNMENT_LEFT, -1, 23, white)
-    hud_root.draw_string(font, Vector2(37,64), "IRA 3D EXCLUSIVO  ·  V0.4  ·  NO 2D", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, cyan)
+    hud_root.draw_string(font, Vector2(37,64), "IRA 3D  ·  V0.5  ·  ZONA DE COMBATE", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, cyan)
     hud_root.draw_string(font, Vector2(s.x*0.48,36), "EXPLORACIÓN TRIDIMENSIONAL", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b5c9dd"))
     hud_root.draw_string(font, Vector2(s.x*0.48,60), "CP: " + checkpoint_name + "    ·    AUTOGUARDADO", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, white)
+    hud_root.draw_string(font, Vector2(s.x*0.48,88), "VIDA %d%%   ·   KILLS %d   ·   SCORE %06d" % [life,kills,score], HORIZONTAL_ALIGNMENT_LEFT,-1,16,cyan)
     _rounded_box(Vector2(s.x-70, 43), 38.0, red, "II", font, ui_size)
     if intro_seconds > 0.0:
         hud_root.draw_rect(Rect2(Vector2.ZERO,s), Color(0,0,0,minf(0.98,intro_seconds*0.5)))
         _center_text("IRA 3D",s/2.0 + Vector2(0,-70),94,cyan)
-        _center_text("PROTOTIPO TRIDIMENSIONAL v0.4",s/2.0 + Vector2(0,22),30,white)
+        _center_text("PROTOTIPO TRIDIMENSIONAL v0.5",s/2.0 + Vector2(0,22),30,white)
         _center_text("CAMINA EN 360 GRADOS · GIRA LA CÁMARA",s/2.0 + Vector2(0,73),20,cyan)
         return
     if paused:
@@ -161,10 +183,12 @@ func _draw_hud() -> void:
     var thumb: Vector2 = joystick_pos if joystick_finger != -1 else base
     hud_root.draw_circle(thumb,34,Color(0.35,0.78,0.92,0.42))
     hud_root.draw_arc(thumb,34,0,TAU,48,Color("a6eeff"),2.6)
+    _rounded_box(Vector2(s.x-109,s.y-262),57.0,red,"GARRA",font,17)
+    _rounded_box(Vector2(s.x-238,s.y-260),54.0,cyan,"PULSO",font,16)
     _rounded_box(Vector2(s.x-109,s.y-120),57.0,red,"SALTO",font,18)
     _rounded_box(Vector2(s.x-238,s.y-116),50.0,cyan,"DASH",font,17)
     _rounded_box(Vector2(s.x-357,s.y-116),43.0,Color("8ba4c9"),"CÁM",font,16)
-    hud_root.draw_string(font,Vector2(s.x*0.41,s.y-36),"DESLIZA LA ZONA DERECHA PARA GIRAR LA CÁMARA",HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("a9bdd1"))
+    hud_root.draw_string(font,Vector2(s.x*0.40,s.y-36),"CAMARA: DESLIZAR   ·   ATAQUE F / PULSO Q (PC)",HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("a9bdd1"))
     if message_time > 0.0:
         hud_root.draw_rect(Rect2(Vector2(s.x*0.24,s.y-250),Vector2(s.x*0.52,47)),Color(0.02,0.03,0.06,0.88))
         _center_text(message,Vector2(s.x*0.50,s.y-217),20,cyan)

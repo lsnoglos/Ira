@@ -24,6 +24,9 @@ var arm_l: Node3D
 var arm_r: Node3D
 var visor: MeshInstance3D
 var claw_glow: MeshInstance3D
+var health := 100
+var invulnerability := 0.0
+var attack_timer := 0.0
 
 func _ready() -> void:
     name = "IRA_El_Purificador"
@@ -62,6 +65,20 @@ func _build_model() -> void:
     leg_r = _make_limb("LegRight", Vector3(0.28, 0.98, 0), silver, dark)
     arm_l = _make_arm("ArmLeft", -0.69, silver, graphite, false)
     arm_r = _make_arm("ArmClaw", 0.69, silver, graphite, true)
+    # Extra armor panels, collar and dorsal organic spines move with the character.
+    for side in [-1.0,1.0]:
+        var chest: MeshInstance3D = K.sphere(model,Vector3(0.50,0.35,0.23),Vector3(side*0.27,1.66,-0.30),white)
+        chest.rotation.z = side*0.18
+        var pauldron: MeshInstance3D = K.sphere(model,Vector3(0.45,0.22,0.50),Vector3(side*0.73,1.94,0.03),silver)
+        pauldron.rotation.z = side*0.30
+        K.box(model,Vector3(0.13,0.42,0.08),Vector3(side*0.43,1.52,-0.35),graphite)
+        K.sphere(model,Vector3(0.35,0.17,0.28),Vector3(side*0.30,0.91,-0.14),silver)
+        var knee: MeshInstance3D = K.box(model,Vector3(0.27,0.28,0.19),Vector3(side*0.28,0.52,-0.24),white)
+        knee.rotation.x = -0.18
+    for i in range(5):
+        var yy: float = 1.85-float(i)*0.29
+        var fin := K.cylinder(model,0.17,0.48+float(i)*0.16,Vector3(0.25,yy,0.54),red_dark,0.0)
+        fin.rotation.x = -0.72
     for i in range(3):
         K.box(model, Vector3(0.13, 0.22, 0.42), Vector3(0.07 + float(i)*0.12, 1.24, 0.40), graphite)
 
@@ -90,7 +107,7 @@ func _make_arm(limb_name: String, x: float, armor: Material, metal: Material, is
         K.box(joint, Vector3(0.35, 0.52, 0.44), Vector3(0.01, -0.98, -0.13), black)
         for blade in range(3):
             var xx: float = (float(blade)-1.0)*0.16
-            var spike := K.cylinder(joint, 0.11, 0.67 + blade * 0.12, Vector3(xx, -1.3, -0.25), red, 0.0)
+            var spike := K.cylinder(joint, 0.09, 0.90 + float(blade) * 0.17, Vector3(xx, -1.32, -0.31), red, 0.0)
             spike.rotation.x = -0.43
         claw_glow = K.sphere(joint, Vector3(0.39, 0.12, 0.39), Vector3(0, -1.03, -0.42), red)
     else:
@@ -108,6 +125,8 @@ func set_controls(stick: Vector2, yaw: float, sprint: bool, jump: bool, dash: bo
         dash_requested = true
 
 func _physics_process(delta: float) -> void:
+    invulnerability = maxf(0.0, invulnerability-delta)
+    attack_timer = maxf(0.0,attack_timer-delta)
     jump_buffer = maxf(jump_buffer-delta, 0.0)
     dash_cooldown = maxf(dash_cooldown-delta, 0.0)
     dash_time = maxf(dash_time-delta, 0.0)
@@ -154,6 +173,28 @@ func _animate_model(delta: float, activity: float) -> void:
     arm_l.rotation.x = lerpf(arm_l.rotation.x, -swing * 0.65, delta * 9.0)
     arm_r.rotation.x = lerpf(arm_r.rotation.x, swing * 0.50, delta * 9.0)
     model.position.y = sin(float(Time.get_ticks_msec()) / 460.0) * 0.012 + absf(sin(locomotion_time))*amount*0.025
+    if attack_timer>0.0:
+        arm_r.rotation.x = -1.20 + sin(attack_timer*25.0)*0.65
+        arm_r.rotation.z = -0.55
+    else:
+        arm_r.rotation.z = lerpf(arm_r.rotation.z,0.0,minf(1.0,delta*9.0))
+    model.scale = Vector3.ONE * (1.035 if invulnerability>0.0 else 1.0)
     if not is_on_floor():
         leg_l.rotation.x = lerpf(leg_l.rotation.x, -0.36, delta * 6)
         leg_r.rotation.x = lerpf(leg_r.rotation.x, 0.32, delta * 6)
+
+func face_forward() -> Vector3:
+    return Vector3.FORWARD.rotated(Vector3.UP,model.rotation.y).normalized()
+
+func claw_attack() -> void:
+    attack_timer = 0.30
+
+func receive_hit(damage: int) -> void:
+    if invulnerability > 0.0 or health <= 0:
+        return
+    health = maxi(0,health-damage)
+    invulnerability = 0.85
+    if health == 0:
+        health = 100
+        global_position = Vector3(0,0.5,8.0)
+        velocity = Vector3.ZERO
