@@ -33,6 +33,8 @@ jobs:
           sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platforms;android-35" "build-tools;35.0.0"
           test -s /root/debug.keystore
           test -s /github/home/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk
+      - name: Build distinctive Android icons
+        run: python3 tools/build_icon.py
       - name: Import project and check parse errors
         shell: bash
         run: |
