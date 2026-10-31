@@ -2,7 +2,7 @@
 
 **Proyecto principal del repositorio: videojuego 3D de exploración y movimiento en tercera persona para Android, construido con Godot 4.4.**
 
-> Versión de prueba v0.3: demuestra movimiento libre, cámara, salto, dash, ciudad 3D y checkpoint. **Todavía no** incluye combate, enemigos, jefe jugable ni modelos artísticos definitivos.
+> Versión de prueba v0.4: demuestra movimiento libre, cámara, salto, dash, ciudad 3D y checkpoint. **Todavía no** incluye combate, enemigos, jefe jugable ni modelos artísticos definitivos.
 
 ## Abrir en Godot
 
@@ -13,9 +13,9 @@
 
 ## Compilar APK
 
-El workflow único `.github/workflows/android-3d.yml` importa el proyecto **desde la raíz**, comprueba la ejecución, genera el APK y valida que contiene scripts de IRA 3D y el identificador Android `com.lsnoglos.ira3d`. Artefacto: `IRA-3D-MAIN-APK`.
+El workflow único `.github/workflows/android-3d.yml` importa el proyecto **desde la raíz**, comprueba la ejecución, genera el APK y valida que contiene scripts de IRA 3D y el identificador Android `com.lsnoglos.ira3d`. Artefacto: `IRA-3D-EXCLUSIVO-v0.4-APK`.
 
-El proyecto se conserva independiente de la instalación 2D anterior. En Android comprueba que estás abriendo **IRA 3D SOLO**, no la app antigua **IRA / El Purificador**.
+El proyecto se conserva independiente de la instalación 2D anterior. En Android comprueba que estás abriendo **IRA 3D EXCLUSIVO**, no la app antigua **IRA / El Purificador**.
 
 ## Estructura
 
