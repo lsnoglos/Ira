@@ -1,13 +1,13 @@
-# IRA 3D — Diseño técnico / Vertical Slice V0.1
+# IRA 3D — Diseño técnico / Prototipo v0.3
 
 ## Objetivo
 
-Demostrar un personaje 3D controlable en Android con cámara en tercera persona, dentro de una ciudad estilizada que exprese la dirección audiovisual del Stage 1. Mantener completamente la versión 2D del repositorio, sin mezclar sus escenas, partidas guardadas ni identificadores Android.
+Demostrar un personaje 3D controlable en Android con cámara en tercera persona, dentro de una ciudad estilizada que exprese la dirección audiovisual del Stage 1. Conservar IRA 2D en una rama histórica independiente, sin mezclar sus escenas, partidas guardadas ni identificadores Android.
 
 ## Arquitectura del repositorio
 
-- `/` — original 2D, mantenido sin modificaciones en `main`.
-- `/ira_3d/` — proyecto independiente Godot 4.4+; propio `project.godot`, presets y paquetes Android.
+- `/` — proyecto IRA 3D independiente Godot 4.4+, raíz única de `main`.
+- `archive/ira-2d-stage1` — rama de respaldo de la versión 2D anterior.
 - `scenes/main.tscn` — boot de la vertical slice.
 - `scripts/Main.gd` — bucle de entrada, estado de pausa, autoguardado y montaje.
 - `scripts/Hero.gd` — CharacterBody3D, cinemática, coyote time, dash y movimiento de piezas de armadura.
