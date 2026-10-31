@@ -34,6 +34,11 @@ jobs:
         run: |
           godot --headless --editor --path . --quit 2>&1 | tee /tmp/godot-import.log
           if grep -E '^SCRIPT ERROR:|^ERROR:.*Parse Error' /tmp/godot-import.log; then exit 1; fi
+      - name: Smoke launch game for runtime errors
+        shell: bash
+        run: |
+          godot --headless --path . --quit-after 80 2>&1 | tee /tmp/godot-run.log
+          if grep -E '^SCRIPT ERROR:|^ERROR:' /tmp/godot-run.log; then exit 1; fi
       - name: Export Android APK (debug signed)
         shell: bash
         run: |
