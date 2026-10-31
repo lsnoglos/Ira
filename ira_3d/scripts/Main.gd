@@ -22,8 +22,8 @@ func _ready() -> void:
     add_child(hero)
     rig = CAMERA.new()
     rig.target = hero
-    rig.global_position = hero.global_position+Vector3(0,1.7,0)
     add_child(rig)
+    rig.global_position = hero.global_position+Vector3(0,1.7,0)
     hud = HUD.new()
     hud.game = self
     add_child(hud)
