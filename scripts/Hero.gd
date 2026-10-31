@@ -65,6 +65,20 @@ func _build_model() -> void:
     leg_r = _make_limb("LegRight", Vector3(0.28, 0.98, 0), silver, dark)
     arm_l = _make_arm("ArmLeft", -0.69, silver, graphite, false)
     arm_r = _make_arm("ArmClaw", 0.69, silver, graphite, true)
+    # Extra armor panels, collar and dorsal organic spines move with the character.
+    for side in [-1.0,1.0]:
+        var chest: MeshInstance3D = K.sphere(model,Vector3(0.50,0.35,0.23),Vector3(side*0.27,1.66,-0.30),white)
+        chest.rotation.z = side*0.18
+        var pauldron: MeshInstance3D = K.sphere(model,Vector3(0.45,0.22,0.50),Vector3(side*0.73,1.94,0.03),silver)
+        pauldron.rotation.z = side*0.30
+        K.box(model,Vector3(0.13,0.42,0.08),Vector3(side*0.43,1.52,-0.35),graphite)
+        K.sphere(model,Vector3(0.35,0.17,0.28),Vector3(side*0.30,0.91,-0.14),silver)
+        var knee: MeshInstance3D = K.box(model,Vector3(0.27,0.28,0.19),Vector3(side*0.28,0.52,-0.24),white)
+        knee.rotation.x = -0.18
+    for i in range(5):
+        var yy: float = 1.85-float(i)*0.29
+        var fin := K.cylinder(model,0.17,0.48+float(i)*0.16,Vector3(0.25,yy,0.54),red_dark,0.0)
+        fin.rotation.x = -0.72
     for i in range(3):
         K.box(model, Vector3(0.13, 0.22, 0.42), Vector3(0.07 + float(i)*0.12, 1.24, 0.40), graphite)
 
@@ -93,7 +107,7 @@ func _make_arm(limb_name: String, x: float, armor: Material, metal: Material, is
         K.box(joint, Vector3(0.35, 0.52, 0.44), Vector3(0.01, -0.98, -0.13), black)
         for blade in range(3):
             var xx: float = (float(blade)-1.0)*0.16
-            var spike := K.cylinder(joint, 0.11, 0.67 + blade * 0.12, Vector3(xx, -1.3, -0.25), red, 0.0)
+            var spike := K.cylinder(joint, 0.09, 0.90 + float(blade) * 0.17, Vector3(xx, -1.32, -0.31), red, 0.0)
             spike.rotation.x = -0.43
         claw_glow = K.sphere(joint, Vector3(0.39, 0.12, 0.39), Vector3(0, -1.03, -0.42), red)
     else:
