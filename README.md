@@ -32,3 +32,9 @@ La última versión del juego 2D se conserva en la rama [archive/ira-2d-stage1](
 ## Limitaciones de esta entrega
 
 Personajes y edificios aún son mallas 3D provisionales; no es un juego final con combate. El movimiento en móvil y el FPS real requieren pruebas en teléfonos físicos. El progreso 3D se guarda localmente en `user://ira3d_checkpoint_v1.json` al llegar a la baliza.
+
+## Verificación del instalador correcto
+
+El instalador IRA 3D v0.4 se obtiene exclusivamente del workflow `IRA 3D - Android Main` y se identifica como `IRA-3D-EXCLUSIVO-v0.4-APK`; nunca utilices los artefactos históricos `IRA-Stage1-Android-APK`, que corresponden a la versión 2D. Para verificar que el APK es realmente 3D, el archivo debe contener `Hero.gdc`, `FollowCamera.gdc` y `RuinedDistrict.gdc`, y no debe contener `Game.gdc` ni los sprites del juego 2D. En pantalla debe aparecer `IRA 3D EXCLUSIVO · V0.4 · NO 2D`.
+
+**Nota:** La compilación v0.4 valida que el archivo exportado tiene exactamente el mismo nombre que el publicado en el artefacto; evita reutilizar APK históricos.
