@@ -3,6 +3,8 @@ name: Build IRA Android APK
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -14,6 +16,17 @@ jobs:
     steps:
       - name: Checkout game sources
         uses: actions/checkout@v4
+      - name: Set up Godot export templates and Android toolchain
+        shell: bash
+        run: |
+          mkdir -p /github/home/.local/share/godot/export_templates/4.4.1.stable
+          cp -a /root/.local/share/godot/export_templates/4.4.1.stable/. /github/home/.local/share/godot/export_templates/4.4.1.stable/
+          mkdir -p /github/home/.config/godot
+          printf "%s\n" '[gd_resource type="EditorSettings" format=3]' '[resource]' 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"' 'export/android/android_sdk_path = "/usr/lib/android-sdk"' 'export/android/debug_keystore = "/root/debug.keystore"' 'export/android/debug_keystore_user = "androiddebugkey"' 'export/android/debug_keystore_pass = "android"' > /github/home/.config/godot/editor_settings-4.4.tres
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platforms;android-35" "build-tools;35.0.0"
+          test -s /root/debug.keystore
+          test -s /github/home/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk
       - name: Unpack prepared sprite assets
         shell: bash
         run: |
@@ -23,11 +36,16 @@ jobs:
         run: |
           godot --headless --editor --path . --quit 2>&1 | tee /tmp/godot-import.log
           if grep -E '^SCRIPT ERROR:|^ERROR:.*Parse Error' /tmp/godot-import.log; then exit 1; fi
+      - name: Smoke launch game for runtime errors
+        shell: bash
+        run: |
+          godot --headless --path . --quit-after 80 2>&1 | tee /tmp/godot-run.log
+          if grep -E '^SCRIPT ERROR:|^ERROR:' /tmp/godot-run.log; then exit 1; fi
       - name: Export Android APK (debug signed)
         shell: bash
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug Android build/IRA-Stage1-debug.apk
+          godot --headless --verbose --path . --export-debug Android build/IRA-Stage1-debug.apk
           test -s build/IRA-Stage1-debug.apk
       - name: Publish APK artifact
         uses: actions/upload-artifact@v4
