@@ -36,3 +36,5 @@ Personajes y edificios aún son mallas 3D provisionales; no es un juego final co
 ## Verificación del instalador correcto
 
 El instalador IRA 3D v0.4 se obtiene exclusivamente del workflow `IRA 3D - Android Main` y se identifica como `IRA-3D-EXCLUSIVO-v0.4-APK`; nunca utilices los artefactos históricos `IRA-Stage1-Android-APK`, que corresponden a la versión 2D. Para verificar que el APK es realmente 3D, el archivo debe contener `Hero.gdc`, `FollowCamera.gdc` y `RuinedDistrict.gdc`, y no debe contener `Game.gdc` ni los sprites del juego 2D. En pantalla debe aparecer `IRA 3D EXCLUSIVO · V0.4 · NO 2D`.
+
+**Nota:** La compilación v0.4 valida que el archivo exportado tiene exactamente el mismo nombre que el publicado en el artefacto; evita reutilizar APK históricos.
