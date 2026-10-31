@@ -13,7 +13,7 @@ var joystick_origin := Vector2.ZERO
 var joystick_pos := Vector2.ZERO
 var joystick_radius := 72.0
 var camera_previous := Vector2.ZERO
-var intro_seconds := 3.0
+var intro_seconds := 5.0
 var paused := false
 var checkpoint_name := "INICIO"
 var message := ""
@@ -140,14 +140,15 @@ func _draw_hud() -> void:
     hud_root.draw_rect(Rect2(Vector2(0,0), Vector2(s.x, 86)), Color(0.012, 0.018, 0.032, 0.74))
     hud_root.draw_rect(Rect2(Vector2(19,16),Vector2(5,53)), red)
     hud_root.draw_string(font, Vector2(37,39), "IRA / EL PURIFICADOR", HORIZONTAL_ALIGNMENT_LEFT, -1, 23, white)
-    hud_root.draw_string(font, Vector2(37,64), "STAGE 1  ·  ZONA DE PRUEBA 3D", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, cyan)
-    hud_root.draw_string(font, Vector2(s.x*0.48,36), "PROTOTIPO DE MOVIMIENTO", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b5c9dd"))
+    hud_root.draw_string(font, Vector2(37,64), "IRA 3D VERIFICADA  ·  BUILD 0.2", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, cyan)
+    hud_root.draw_string(font, Vector2(s.x*0.48,36), "EXPLORACIÓN TRIDIMENSIONAL", HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("b5c9dd"))
     hud_root.draw_string(font, Vector2(s.x*0.48,60), "CP: " + checkpoint_name + "    ·    AUTOGUARDADO", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, white)
     _rounded_box(Vector2(s.x-70, 43), 38.0, red, "II", font, ui_size)
     if intro_seconds > 0.0:
         hud_root.draw_rect(Rect2(Vector2.ZERO,s), Color(0,0,0,minf(0.98,intro_seconds*0.5)))
-        _center_text("STAGE 1", s/2.0 + Vector2(0,-20), 55, white)
-        _center_text("SALVAR A LA HUMANIDAD ESTÁ EN TUS MANOS",s/2.0 + Vector2(0,37),23,cyan)
+        _center_text("IRA 3D",s/2.0 + Vector2(0,-70),94,cyan)
+        _center_text("PROTOTIPO TRIDIMENSIONAL v0.2",s/2.0 + Vector2(0,22),30,white)
+        _center_text("CAMINA EN 360 GRADOS · GIRA LA CÁMARA",s/2.0 + Vector2(0,73),20,cyan)
         return
     if paused:
         hud_root.draw_rect(Rect2(Vector2.ZERO,s),Color(0.015,0.025,0.04,0.78))
