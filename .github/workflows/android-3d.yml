@@ -50,13 +50,13 @@ jobs:
         run: |
           mkdir -p build
           godot --headless --path . --export-debug Android build/IRA-3D-EXCLUSIVO-v0.4.apk
-          test -s build/IRA-3D-MAIN-debug.apk
+          test -s build/IRA-3D-EXCLUSIVO-v0.4.apk
       - name: Verify app identity
-        run: python3 tools/verify_apk.py build/IRA-3D-MAIN-debug.apk
+        run: python3 tools/verify_apk.py build/IRA-3D-EXCLUSIVO-v0.4.apk
       - name: Upload 3D Android APK
         uses: actions/upload-artifact@v4
         with:
           name: IRA-3D-EXCLUSIVO-v0.4-APK
-          path: build/IRA-3D-MAIN-debug.apk
+          path: build/IRA-3D-EXCLUSIVO-v0.4.apk
           if-no-files-found: error
           retention-days: 30
