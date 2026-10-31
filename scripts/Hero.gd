@@ -24,6 +24,9 @@ var arm_l: Node3D
 var arm_r: Node3D
 var visor: MeshInstance3D
 var claw_glow: MeshInstance3D
+var health := 100
+var invulnerability := 0.0
+var attack_timer := 0.0
 
 func _ready() -> void:
     name = "IRA_El_Purificador"
@@ -108,6 +111,8 @@ func set_controls(stick: Vector2, yaw: float, sprint: bool, jump: bool, dash: bo
         dash_requested = true
 
 func _physics_process(delta: float) -> void:
+    invulnerability = maxf(0.0, invulnerability-delta)
+    attack_timer = maxf(0.0,attack_timer-delta)
     jump_buffer = maxf(jump_buffer-delta, 0.0)
     dash_cooldown = maxf(dash_cooldown-delta, 0.0)
     dash_time = maxf(dash_time-delta, 0.0)
@@ -154,6 +159,28 @@ func _animate_model(delta: float, activity: float) -> void:
     arm_l.rotation.x = lerpf(arm_l.rotation.x, -swing * 0.65, delta * 9.0)
     arm_r.rotation.x = lerpf(arm_r.rotation.x, swing * 0.50, delta * 9.0)
     model.position.y = sin(float(Time.get_ticks_msec()) / 460.0) * 0.012 + absf(sin(locomotion_time))*amount*0.025
+    if attack_timer>0.0:
+        arm_r.rotation.x = -1.20 + sin(attack_timer*25.0)*0.65
+        arm_r.rotation.z = -0.55
+    else:
+        arm_r.rotation.z = lerpf(arm_r.rotation.z,0.0,minf(1.0,delta*9.0))
+    model.scale = Vector3.ONE * (1.035 if invulnerability>0.0 else 1.0)
     if not is_on_floor():
         leg_l.rotation.x = lerpf(leg_l.rotation.x, -0.36, delta * 6)
         leg_r.rotation.x = lerpf(leg_r.rotation.x, 0.32, delta * 6)
+
+func face_forward() -> Vector3:
+    return Vector3.FORWARD.rotated(Vector3.UP,model.rotation.y).normalized()
+
+func claw_attack() -> void:
+    attack_timer = 0.30
+
+func receive_hit(damage: int) -> void:
+    if invulnerability > 0.0 or health <= 0:
+        return
+    health = maxi(0,health-damage)
+    invulnerability = 0.85
+    if health == 0:
+        health = 100
+        global_position = Vector3(0,0.5,8.0)
+        velocity = Vector3.ZERO
