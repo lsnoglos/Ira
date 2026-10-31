@@ -24,7 +24,7 @@ jobs:
           mkdir -p /github/home/.config/godot
           printf "%s\n" '[gd_resource type="EditorSettings" format=3]' '[resource]' 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"' 'export/android/android_sdk_path = "/usr/lib/android-sdk"' 'export/android/debug_keystore = "/root/debug.keystore"' 'export/android/debug_keystore_user = "androiddebugkey"' 'export/android/debug_keystore_pass = "android"' > /github/home/.config/godot/editor_settings-4.4.tres
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platforms;android-35" "build-tools;35.0.0"
           test -s /root/debug.keystore
           test -s /github/home/.local/share/godot/export_templates/4.4.1.stable/android_debug.apk
       - name: Unpack prepared sprite assets
